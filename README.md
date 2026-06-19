@@ -1,16 +1,38 @@
 # terraform-module-eks-setup
 
-Root configuration that provisions a production-grade EKS environment for the urukube IDP. It wires together the networking and EKS modules and is called by BU repos via `workflow_call`.
+Provisions the **Orchestrator Cluster** for the urukube Internal Developer Platform. The Orchestrator is the platform control plane — owned and funded centrally by the platform team. It runs **Crossplane**, **ArgoCD**, and **Backstage**, and its sole job is to provision and manage Kubernetes environments for every Business Unit on demand.
+
+> BU workload clusters are not provisioned by this module. They are provisioned by Crossplane running *on* the Orchestrator cluster, triggered by CRDs submitted through the Backstage self-service portal. See [`CLUSTER-TOPOLOGY.md`](https://github.com/urukube/.github/blob/main/.github/CLUSTER-TOPOLOGY.md) for the full topology.
+
+## What the Orchestrator Cluster Does
+
+```mermaid
+flowchart LR
+    DEV["BU Engineer\nBackstage Portal"]
+    CRD["Environment CRD\napplied to Orchestrator"]
+    CROSSPLANE["Crossplane\nProvisions cloud infra\nVPC · EKS · IAM"]
+    ARGOCD["ArgoCD\nDeploys app-of-apps\nto new BU cluster"]
+
+    DEV --> CRD --> CROSSPLANE --> ARGOCD
+```
+
+| Component | Role |
+|---|---|
+| **Crossplane** | Reconciles CRDs into cloud infrastructure (VPCs, EKS clusters, IAM, node pools) for each BU |
+| **ArgoCD** | Detects newly provisioned BU clusters and deploys app-of-apps (ingress, cert-manager, observability, policy, secrets) |
+| **Backstage** | Self-service portal where BU engineers request environments — generates the CRDs Crossplane acts on |
+
+The Orchestrator runs as a PROD + DR active/standby pair across two AWS regions (RTO < 15 min, RPO < 5 min). This module provisions one instance (PROD or DR).
 
 ## Architecture
 
 A single component is currently active:
 
-- **`eks-infra`**: Provisions the full cluster environment in one apply:
-  - **VPC** (via `urukube/terraform-module-networking`) — 3-tier subnets, NAT gateways, VPC endpoints, security groups
+- **`eks-infra`**: Provisions the full Orchestrator cluster environment in one apply:
+  - **VPC** (via `urukube/terraform-module-networking`) — 3-tier subnets across 3 AZs, NAT gateways, VPC endpoints, security groups
   - **EKS cluster** (via `urukube/terraform-module-eks`) — control plane, self-managed node group, IAM, IRSA
 
-> `eks-essential-addons` and `eks-custom-addons` components are planned but not yet built.
+> `eks-essential-addons` and `eks-custom-addons` (which will install Crossplane, ArgoCD, and Backstage onto the cluster) are planned but not yet built.
 
 ## Module Sources
 
@@ -23,15 +45,15 @@ Update the `ref=` in `eks-infra/eks-infra-setup.tf` and `eks-infra/networking-se
 
 ## Deployment Workflow
 
-BU repos call this module's reusable workflow:
+The platform team calls this reusable workflow from their orchestrator provisioning repo:
 
 ```yaml
 uses: urukube/terraform-module-eks-setup/.github/workflows/main.yml@main
 with:
-  bucket_name: my-tf-state-bucket
-  master_s3_directory: my-cluster
-  tfvar_file_path: ./envs/dev.tfvars
-  approvers: my-github-username
+  bucket_name: orchestrator-tf-state
+  master_s3_directory: orchestrator-prod
+  tfvar_file_path: ./envs/prod.tfvars
+  approvers: platform-team-lead
 ```
 
 ### Flow
@@ -45,22 +67,22 @@ with:
 
 ```mermaid
 sequenceDiagram
-    actor User
+    actor Platform Team
     participant GA as GitHub Actions
     participant Infra as Terraform (eks-infra)
 
-    User->>GA: Trigger Workflow (workflow_call)
+    Platform Team->>GA: Trigger Workflow (workflow_call)
     GA->>GA: Checkout & auth AWS
     GA->>GA: Create S3 backend bucket (idempotent)
 
     rect rgba(0, 0, 255, 0.1)
-    note right of GA: Infrastructure Provisioning
+    note right of GA: Orchestrator Cluster Provisioning
     GA->>Infra: terraform init & plan
     Infra-->>GA: Plan Output
-    GA->>User: Request Approval
-    User->>GA: Approve
+    GA->>Platform Team: Request Approval
+    Platform Team->>GA: Approve
     GA->>Infra: terraform apply
-    Infra-->>GA: VPC + EKS Created
+    Infra-->>GA: VPC + EKS Cluster Created
     end
 ```
 
@@ -80,15 +102,15 @@ State is stored in S3 with the key `{master_s3_directory}/eks_infra/terraform.tf
 
 ## Destroy
 
-To tear down infrastructure, call the `destroy.yml` reusable workflow:
+To tear down the Orchestrator cluster, call the `destroy.yml` reusable workflow:
 
 ```yaml
 uses: urukube/terraform-module-eks-setup/.github/workflows/destroy.yml@main
 with:
-  bucket_name: my-tf-state-bucket
-  master_s3_directory: my-cluster
-  tfvar_file_path: ./envs/dev.tfvars
-  approvers: my-github-username
+  bucket_name: orchestrator-tf-state
+  master_s3_directory: orchestrator-prod
+  tfvar_file_path: ./envs/prod.tfvars
+  approvers: platform-team-lead
   component: eks_infra
 ```
 
