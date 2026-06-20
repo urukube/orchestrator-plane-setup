@@ -110,7 +110,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks_infra"></a> [eks\_infra](#module\_eks\_infra) | git::https://github.com/urukube/terraform-module-eks.git | v1.0.2 |
+| <a name="module_eks_infra"></a> [eks\_infra](#module\_eks\_infra) | git::https://github.com/urukube/terraform-module-eks.git | v1.1.0 |
 | <a name="module_networking"></a> [networking](#module\_networking) | git::https://github.com/urukube/terraform-module-networking.git | v1.1.1 |
 
 ## Resources
@@ -139,7 +139,7 @@ No resources.
 | <a name="input_cluster_enabled_log_types"></a> [cluster\_enabled\_log\_types](#input\_cluster\_enabled\_log\_types) | List of log types to enable for the cluster | `list(string)` | <pre>[<br/>  "api",<br/>  "audit",<br/>  "authenticator",<br/>  "controllerManager",<br/>  "scheduler"<br/>]</pre> | no |
 | <a name="input_cluster_endpoint_access_type"></a> [cluster\_endpoint\_access\_type](#input\_cluster\_endpoint\_access\_type) | Type of API server endpoint access:<br/>- "private": Only private endpoint (accessible only within VPC/VPN)<br/>- "private\_with\_public\_cidrs": Private endpoint + public restricted to specific CIDRs<br/>- "public": Public endpoint open to all (0.0.0.0/0), no private access | `string` | `"private"` | no |
 | <a name="input_cluster_endpoint_public_access_cidrs"></a> [cluster\_endpoint\_public\_access\_cidrs](#input\_cluster\_endpoint\_public\_access\_cidrs) | List of CIDR blocks allowed to access the public API server endpoint. Required when access\_type is 'private\_with\_public\_cidrs'. | `list(string)` | `[]` | no |
-| <a name="input_cluster_kubernetes_version"></a> [cluster\_kubernetes\_version](#input\_cluster\_kubernetes\_version) | Kubernetes <major>.<minor> version to use for the cluster | `string` | `"1.33"` | no |
+| <a name="input_cluster_kubernetes_version"></a> [cluster\_kubernetes\_version](#input\_cluster\_kubernetes\_version) | Kubernetes <major>.<minor> version to use for the cluster | `string` | `"1.36"` | no |
 | <a name="input_desired_size"></a> [desired\_size](#input\_desired\_size) | Desired number of nodes to use for the cluster nodes | `number` | `2` | no |
 | <a name="input_eks_node_subnets"></a> [eks\_node\_subnets](#input\_eks\_node\_subnets) | List of CIDR blocks for EKS node subnets. If not provided, will auto-calculate based on VPC CIDR | `list(string)` | `[]` | no |
 | <a name="input_enable_alb"></a> [enable\_alb](#input\_enable\_alb) | Create Application Load Balancer | `bool` | `false` | no |
