@@ -1,7 +1,7 @@
 module "eks_infra" {
   # checkov:skip=CKV_TF_1:Using version tags instead of commit hashes
   # checkov:skip=CKV_TF_2:Intentional floating major version tag — tracks latest v1.x.x release
-  source = "git::https://github.com/urukube/terraform-module-eks.git?ref=v1.1.1"
+  source = "git::https://github.com/urukube/terraform-module-eks.git?ref=v1.2.0"
 
   # Basic Cluster Info
   friendly_name              = var.friendly_name
@@ -52,4 +52,7 @@ module "eks_infra" {
   #       Manual Lifecycle: You define and manage the ASG yourself using Terraform (like in your current code).
   #       Manual Upgrades: You are responsible for cycling nodes (cordoning, draining, and terminating) during upgrades or utilizing ASG "Instance Refresh" features manually.
   is_eks_managed_node_group = var.is_eks_managed_node_group
+
+  # Istio
+  enable_istio = var.enable_istio
 }

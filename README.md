@@ -19,7 +19,7 @@ A single component is currently active:
 | Module | Source | Version |
 |---|---|---|
 | networking | `urukube/terraform-module-networking` | `v1.1.2` |
-| eks | `urukube/terraform-module-eks` | `v1.0.0` |
+| eks | `urukube/terraform-module-eks` | `v1.2.0` |
 
 Update the `ref=` in `eks-infra/eks-infra-setup.tf` and `eks-infra/networking-setup.tf` when consuming a new release.
 
@@ -110,7 +110,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks_infra"></a> [eks\_infra](#module\_eks\_infra) | git::https://github.com/urukube/terraform-module-eks.git | v1.1.1 |
+| <a name="module_eks_infra"></a> [eks\_infra](#module\_eks\_infra) | git::https://github.com/urukube/terraform-module-eks.git | v1.2.0 |
 | <a name="module_networking"></a> [networking](#module\_networking) | git::https://github.com/urukube/terraform-module-networking.git | v1.1.2 |
 
 ## Resources
@@ -146,6 +146,7 @@ No resources.
 | <a name="input_enable_dns_hostnames"></a> [enable\_dns\_hostnames](#input\_enable\_dns\_hostnames) | Enable DNS hostnames in VPC | `bool` | `true` | no |
 | <a name="input_enable_dns_support"></a> [enable\_dns\_support](#input\_enable\_dns\_support) | Enable DNS support in VPC | `bool` | `true` | no |
 | <a name="input_enable_flow_logs"></a> [enable\_flow\_logs](#input\_enable\_flow\_logs) | Enable VPC Flow Logs to CloudWatch | `bool` | `false` | no |
+| <a name="input_enable_istio"></a> [enable\_istio](#input\_enable\_istio) | Open port 15017 from EKS control plane to nodes for Istio webhook injection | `bool` | `false` | no |
 | <a name="input_enable_istio_support"></a> [enable\_istio\_support](#input\_enable\_istio\_support) | Configure security groups for Istio service mesh | `bool` | `false` | no |
 | <a name="input_enable_nat_gateway"></a> [enable\_nat\_gateway](#input\_enable\_nat\_gateway) | Enable NAT Gateway for private subnets | `bool` | `true` | no |
 | <a name="input_enable_network_load_balancer"></a> [enable\_network\_load\_balancer](#input\_enable\_network\_load\_balancer) | Create Network Load Balancer in public subnets | `bool` | `false` | no |

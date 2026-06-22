@@ -164,6 +164,12 @@ variable "nlb_access_logs_prefix" {
   default     = null
 }
 
+variable "enable_istio" {
+  description = "Open port 15017 from EKS control plane to nodes for Istio webhook injection"
+  type        = bool
+  default     = false
+}
+
 variable "enable_istio_support" {
   description = "Configure security groups for Istio service mesh"
   type        = bool
