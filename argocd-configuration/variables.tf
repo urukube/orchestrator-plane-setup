@@ -8,6 +8,12 @@ variable "env" {
   }
 }
 
+variable "aws_region" {
+  description = "AWS region where Secrets Manager secrets are stored"
+  type        = string
+  default     = "us-east-1"
+}
+
 variable "github_org" {
   description = "GitHub organisation to scan for repos tagged with platform-custom-xrds"
   type        = string
