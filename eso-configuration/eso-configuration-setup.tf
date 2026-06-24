@@ -1,7 +1,7 @@
 module "eso_configuration" {
   # checkov:skip=CKV_TF_1:Using version tags instead of commit hashes
   # checkov:skip=CKV_TF_2:Intentional floating major version tag — tracks latest v1.x.x release
-  source = "git::https://github.com/urukube/orchestrator-eso-config.git?ref=v1.0.0"
+  source = "git::https://github.com/urukube/orchestrator-eso-config.git?ref=v1.0.1"
 
   aws_region               = var.region
   eso_namespace            = var.eso_namespace
