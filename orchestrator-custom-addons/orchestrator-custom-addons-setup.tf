@@ -27,6 +27,7 @@ module "orchestrator_custom_addons" {
   enable_eso        = var.enable_eso
   enable_ecr        = var.enable_ecr
   enable_crossplane = var.enable_crossplane
+  enable_komoplane  = var.enable_komoplane
 
   # Addon versions
   istio_version                   = var.istio_version
@@ -36,4 +37,5 @@ module "orchestrator_custom_addons" {
   eso_helm_version                = var.eso_helm_version
   crossplane_version              = var.crossplane_version
   crossplane_provider_aws_version = var.crossplane_provider_aws_version
+  komoplane_version               = var.komoplane_version
 }

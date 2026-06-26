@@ -68,3 +68,17 @@ output "kiali_namespace" {
   description = "Namespace where Kiali is installed"
   value       = module.orchestrator_custom_addons.kiali_namespace
 }
+
+################################################################################
+# Komoplane Outputs
+################################################################################
+
+output "komoplane_release_name" {
+  description = "Name of the Komoplane Helm release"
+  value       = module.orchestrator_custom_addons.komoplane_release_name
+}
+
+output "komoplane_namespace" {
+  description = "Namespace where Komoplane is installed"
+  value       = module.orchestrator_custom_addons.komoplane_namespace
+}
