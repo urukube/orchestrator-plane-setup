@@ -6,13 +6,20 @@ See [`CLUSTER-TOPOLOGY.md`](https://github.com/urukube/.github/blob/main/.github
 
 ## Architecture
 
-A single component is currently active:
+Two components are currently active:
 
 - **`eks-infra`**: Provisions the full cluster environment in one apply:
   - **VPC** (via `urukube/terraform-module-networking`) — 3-tier subnets across 3 AZs, NAT gateways, VPC endpoints, security groups
   - **EKS cluster** (via `urukube/terraform-module-eks`) — control plane, self-managed node group, IAM, IRSA
 
-> `eks-essential-addons` and `eks-custom-addons` components are planned but not yet built.
+- **`orchestrator-custom-addons`**: Installs platform addons on the cluster (via `urukube/orchestrator-custom-addons`):
+  - Istio service mesh + Ingress Gateway
+  - ArgoCD + Image Updater + ECR token refresh
+  - Crossplane + AWS provider (IRSA)
+  - Komoplane (Crossplane resource UI)
+  - Prometheus
+  - Kiali
+  - External Secrets Operator
 
 ## Module Sources
 
@@ -20,8 +27,9 @@ A single component is currently active:
 |---|---|---|
 | networking | `urukube/terraform-module-networking` | `v1.1.2` |
 | eks | `urukube/terraform-module-eks` | `v1.2.0` |
+| orchestrator-custom-addons | `urukube/orchestrator-custom-addons` | `v1.4.0` |
 
-Update the `ref=` in `eks-infra/eks-infra-setup.tf` and `eks-infra/networking-setup.tf` when consuming a new release.
+Update the `ref=` in the relevant setup file when consuming a new release.
 
 ## Deployment Workflow
 
